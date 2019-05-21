@@ -19,12 +19,7 @@ int main(void)
     int    N = 2 * BLOCKS * THREADS;
     int size = N * sizeof(int);
 
-    // Allocate space for device copies of a, b, c
-    cudaMalloc((void **)&d_a, size);
-    cudaMalloc((void **)&d_b, size);
-    cudaMalloc((void **)&d_c, size);
-
-    // Allocate space for device copies of a, b, c
+    // Allocate space for host copies of a, b, c
     a = (int *)malloc(size);
     b = (int *)malloc(size);
     c = (int *)malloc(size);
@@ -32,6 +27,11 @@ int main(void)
     // Setup input values
     random_ints(a, N);
     random_ints(b, N);
+
+    // Allocate space for device copies of a, b, c
+    cudaMalloc((void **)&d_a, size);
+    cudaMalloc((void **)&d_b, size);
+    cudaMalloc((void **)&d_c, size);
 
     // Copy inputs to device
     cudaMemcpy(d_a, &a, size, cudaMemcpyHostToDevice);
@@ -57,6 +57,6 @@ int main(void)
 // Vector addition
 __global__ add(int *a, int *b, int *c)
 {
-    int index = threadIdx.x + blockIdx.x * blockDim.x;
+    int index = blockIdx.x * blockDim.x + threadIdx.x;
     c[index] = a[index] + b[index];
 }

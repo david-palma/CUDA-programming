@@ -17,14 +17,14 @@ int main(void)
     int *d_a, *d_b, *d_c;   // device copies of a, b, c
     int size = sizeof(int);
 
+    // Setup input values
+    a = 5;
+    b = 9;
+
     // Allocate space for device copies of a, b, c
     cudaMalloc((void **)&d_a, size);
     cudaMalloc((void **)&d_b, size);
     cudaMalloc((void **)&d_c, size);
-
-    // Setup input values
-    a = 5;
-    b = 9;
 
     // Copy inputs to device
     cudaMemcpy(d_a, &a, size, cudaMemcpyHostToDevice);
