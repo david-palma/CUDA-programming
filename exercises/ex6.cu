@@ -10,6 +10,7 @@
 
 // Prototype
 __global__ saxpy(int a, int *x, int *y, int N);
+__host__ void ints(int* m, int N);
 
 int main(void)
 {
@@ -61,4 +62,12 @@ __global__ saxpy(float a, float *x, float *y, int N)
     {
         y[index] = a*x[index] + y[index];
     }
+}
+
+// Initialisation
+__host__ void ints(int* m, int N)
+{
+    int i;
+    for (i = 0; i < N; i++)
+        m[i] = i;
 }

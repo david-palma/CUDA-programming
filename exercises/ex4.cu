@@ -10,6 +10,7 @@
 
 // Prototype
 __global__ add(int *a, int *b, int *c);
+__host__ void ints(int* m, int N);
 
 int main(void)
 {
@@ -25,8 +26,8 @@ int main(void)
     c = (int *)malloc(size);
 
     // Setup input values
-    random_ints(a, N);
-    random_ints(b, N);
+    ints(a, N);
+    ints(b, N);
 
     // Allocate space for device copies of a, b, c
     cudaMalloc((void **)&d_a, size);
@@ -58,4 +59,12 @@ int main(void)
 __global__ add(int *a, int *b, int *c)
 {
     c[threadIdx.x] = a[threadIdx.x] + b[threadIdx.x];
+}
+
+// Initialisation
+__host__ void ints(int* m, int N)
+{
+    int i;
+    for (i = 0; i < N; ++i)
+        m[i] = i;
 }
