@@ -16,7 +16,7 @@ The source code is well commented and easy to follow, though a minimum knowledge
 * [exercise 3](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex3.cu): vector addition using parallel blocks
 * [exercise 4](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex4.cu): vector addition using parallel threads
 * [exercise 5](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex5.cu): vector addition combining blocks and threads
-* [exercise 6](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex6.cu): Single-precision A*X Plus Y
+* [exercise 6](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex6.cu): single-precision A*X Plus Y
 * [exercise 7](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex7.cu): multiplication of square matrices
 * [exercise 8](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex8.cu): transpose of a square matrix
 
