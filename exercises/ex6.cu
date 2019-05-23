@@ -5,62 +5,69 @@
 #include <cuda.h>
 #include <stdio.h>
 
-#define BLOCKS  32
-#define THREADS 32
+#define BLOCKS  4
+#define THREADS 4
 
 // Prototype
-__global__ void saxpy(float a, float *x, float *y, int N);
+__global__ void saxpy(float a, float *x, float *y, float *z, int N);
 __host__ void ints(float *m, int N);
+__host__ void print_saxpy(float a, float *x, float *y, float *z, int N);
 
 int main(void)
 {
-    float *x, *y, a;    // host copies of x, y, a
-    float *d_x, *d_y;   // device copies of x, y
+    float *x, *y, *z, a;     // host copies of x, y, a
+    float *d_x, *d_y, *d_z;  // device copies of x, y
 
-    int    N = 2 * BLOCKS * THREADS;
+    int    N = BLOCKS * THREADS;
     int size = N * sizeof(float);
 
     // Allocate space for host copies of x, y
     x = (float *)malloc(size);
     y = (float *)malloc(size);
+    z = (float *)malloc(size);
 
     // Setup input values
     ints(x, N);
     ints(y, N);
-    a = 3.0;
+    a = 3.0/2.5;
 
     // Allocate space for device copies of x, y
     cudaMalloc((void **)&d_x, size);
     cudaMalloc((void **)&d_y, size);
+    cudaMalloc((void **)&d_z, size);
 
     // Copy inputs to device
     cudaMemcpy(d_x, x, size, cudaMemcpyHostToDevice);
     cudaMemcpy(d_y, y, size, cudaMemcpyHostToDevice);
 
     // Call the kernel on GPU
-    saxpy<<< BLOCKS, THREADS >>>(a, d_x, d_y, N);
+    saxpy<<< BLOCKS, THREADS >>>(a, d_x, d_y, d_z, N);
 
     // Copy result back to host
-    cudaMemcpy(y, d_y, size, cudaMemcpyDeviceToHost);
+    cudaMemcpy(z, d_z, size, cudaMemcpyDeviceToHost);
+
+    print_saxpy(a, x, y, z, N);
 
     // Cleanup
     free(x);
     free(y);
+    free(z);
     cudaFree(d_x);
     cudaFree(d_y);
+    cudaFree(d_z);
 
     return(EXIT_SUCCESS);
 }
 
 // Single-precision A*X Plus Y
-__global__ void saxpy(float a, float *x, float *y, int N)
+__global__ void saxpy(float a, float *x, float *y, float *z, int N)
 {
     int index = blockIdx.x * blockDim.x + threadIdx.x;
 
     // Avoid accessing beyond the end of the arrays
     if(index < N)
     {
-        y[index] = a * x[index] + y[index];
+        z[index] = a * x[index] + y[index];
     }
 }
 
@@ -69,5 +76,15 @@ __host__ void ints(float *m, int N)
 {
     int i;
     for(i = 0; i < N; i++)
-        m[i] = i/N;
+        m[i] = i/(i + 1.0);
+}
+
+// Print the elements of the equation
+__host__ void print_saxpy(float a, float *x, float *y, float *z, int N)
+{
+    for(int i = 0; i < N; i++)
+    {
+        printf("%5.2f = %5.2f x %5.2f + %5.2f\n", z[i], a, x[i], y[i]);
+    }
+    printf("\n");
 }

@@ -5,12 +5,13 @@
 #include <cuda.h>
 #include <stdio.h>
 
-#define BLOCKS  1024
-#define THREADS    1
+#define BLOCKS  8
+#define THREADS 1
 
 // Prototype
 __global__ void add(int *a, int *b, int *c);
 __host__ void ints(int *m, int N);
+__host__ void print_array(int *a, int N);
 
 int main(void)
 {
@@ -44,6 +45,11 @@ int main(void)
     // Copy result back to host
     cudaMemcpy(c, d_c, size, cudaMemcpyDeviceToHost);
 
+    // Check the result
+    print_array(a, N);
+    print_array(b, N);
+    print_array(c, N);
+
     // Cleanup
     free(a);
     free(b);
@@ -67,4 +73,14 @@ __host__ void ints(int *m, int N)
     int i;
     for(i = 0; i < N; i++)
         m[i] = i;
+}
+
+// Print the elements of the array
+__host__ void print_array(int *a, int N)
+{
+    for(int i = 0; i < N; i++)
+    {
+        printf("%d\t", a[i]);
+    }
+    printf("\n");
 }
