@@ -5,12 +5,12 @@
 #include <cuda.h>
 #include <stdio.h>
 
-#define BLOCKS  512
-#define THREADS   1
+#define BLOCKS  1024
+#define THREADS    1
 
 // Prototype
-__global__ add(int *a, int *b, int *c);
-__host__ void ints(int* m, int N);
+__global__ void add(int *a, int *b, int *c);
+__host__ void ints(int *m, int N);
 
 int main(void)
 {
@@ -35,10 +35,10 @@ int main(void)
     cudaMalloc((void **)&d_c, size);
 
     // Copy inputs to device
-    cudaMemcpy(d_a, &a, size, cudaMemcpyHostToDevice);
-    cudaMemcpy(d_b, &b, size, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_a, a, size, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_b, b, size, cudaMemcpyHostToDevice);
 
-    // Call the add() kernel on GPU
+    // Call the kernel on GPU
     add<<< BLOCKS, THREADS >>>(d_a, d_b, d_c);
 
     // Copy result back to host
@@ -56,15 +56,15 @@ int main(void)
 }
 
 // Vector addition
-__global__ add(int *a, int *b, int *c)
+__global__ void add(int *a, int *b, int *c)
 {
     c[blockIdx.x] = a[blockIdx.x] + b[blockIdx.x];
 }
 
 // Initialisation
-__host__ void ints(int* m, int N)
+__host__ void ints(int *m, int N)
 {
     int i;
-    for (i = 0; i < N; i++)
+    for(i = 0; i < N; i++)
         m[i] = i;
 }

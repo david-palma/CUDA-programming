@@ -5,12 +5,14 @@
 #include <cuda.h>
 #include <stdio.h>
 
-#define BLOCKS  16
-#define THREADS  1
+#define BLOCKS  2
+#define THREADS 2
 
 // Prototypes
-__global__ void gpu_square_matrix_mult(int *d_A, int *d_B, int *d_P, int dim);
-__host__ void ints(int* m, int N);
+__global__ void gpu_square_matrix_mult(int *d_A, int *d_B, int *d_P, int N);
+__host__ void ints(int *m, int N);
+__host__ void eye(int *M, int N);
+__host__ void print_matrix(int *A, int N);
 
 int main(void)
 {
@@ -27,7 +29,7 @@ int main(void)
 
     // Setup input values
     ints(A, N * N);
-    ints(B, N * N);
+    eye(B, N);
     ints(P, N * N);
 
     // Allocate space for device copies of A, B, P
@@ -36,18 +38,24 @@ int main(void)
     cudaMalloc((void **)&d_P, size);
 
     // Copy inputs to device
-    cudaMemcpy(d_x, &x, size, cudaMemcpyHostToDevice);
-    cudaMemcpy(d_y, &y, size, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_A, A, size, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_B, B, size, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_P, P, size, cudaMemcpyHostToDevice);
 
     // Setup the execution configuration
     dim3 dim_grid(BLOCKS, BLOCKS, 1);     // size: BLOCKS x BLOCKS x 1
     dim3 dim_block(THREADS, THREADS, 1);  // size: THREADS x THREADS x 1
 
-    // Call the saxpy() kernel on GPU
+    // Call the kernel on GPU
     gpu_square_matrix_mult<<< dim_grid, dim_block >>>(d_A, d_B, d_P, N);
 
     // Copy result back to host
     cudaMemcpy(P, d_P, size, cudaMemcpyDeviceToHost);
+
+    // Check the result
+    print_matrix(A, N);
+    print_matrix(B, N);
+    print_matrix(P, N);
 
     // Cleanup
     free(A);
@@ -61,7 +69,7 @@ int main(void)
 }
 
 // Square matrix multiplication
-__global__ void gpu_square_matrix_mult(int *d_A, int *d_B, int *d_P, int dim)
+__global__ void gpu_square_matrix_mult(int *d_A, int *d_B, int *d_P, int N)
 {
     // Pvalue is the element of the matrix that is computed by the thread
     int Pvalue = 0;
@@ -70,22 +78,43 @@ __global__ void gpu_square_matrix_mult(int *d_A, int *d_B, int *d_P, int dim)
     int col = blockIdx.x * blockDim.x + threadIdx.x;
 
     // Avoid accessing beyond the end of the matrices
-    if(row < dim && col < dim)
+    if(row < N && col < N)
     {
-        int k;
-        for (k = 0; k < dim; k++)
+        for(int k = 0; k < N; k++)
         {
-            Pvalue += d_A[row * dim + k] * d_B[k * dim + col];
+            Pvalue += d_A[row * N + k] * d_B[k * N + col];
         }
 
-        d_P[row * dim + col] = Pvalue;
+        d_P[row * N + col] = Pvalue;
     }
 }
 
 // Initialisation
-__host__ void ints(int* m, int N)
+__host__ void ints(int *m, int N)
 {
     int i;
-    for (i = 0; i < N; i++)
+    for(i = 0; i < N; i++)
         m[i] = i;
+}
+
+// Identity matrix
+__host__ void eye(int *M, int N)
+{
+    for(int i = 0; i < N; i++)
+        for(int j = 0; j < N; j++)
+            M[i*N + j] = (i == j);
+}
+
+// Print the elements of the matrix
+__host__ void print_matrix(int *A, int N)
+{
+    for(int i = 0; i < N; i++)
+    {
+        for(int j = 0; j < N; j++)
+        {
+            printf("%d\t", A[i * N + j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
 }

@@ -9,7 +9,7 @@
 #define THREADS 1
 
 // Prototype
-__global__ add(int *a, int *b, int *c);
+__global__ void add(int *a, int *b, int *c);
 
 int main(void)
 {
@@ -30,7 +30,7 @@ int main(void)
     cudaMemcpy(d_a, &a, size, cudaMemcpyHostToDevice);
     cudaMemcpy(d_b, &b, size, cudaMemcpyHostToDevice);
 
-    // Call the add() kernel on GPU
+    // Call the kernel on GPU
     add<<< BLOCKS, THREADS >>>(d_a, d_b, d_c);
 
     // Copy result back to host
@@ -45,7 +45,7 @@ int main(void)
 }
 
 // Addition
-__global__ add(int *a, int *b, int *c)
+__global__ void add(int *a, int *b, int *c)
 {
     *c = *a + *b;
 }
