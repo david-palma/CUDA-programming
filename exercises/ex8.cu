@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 #define BLOCKS  16
-#define THREADS 1
+#define THREADS  1
 
 // Prototypes
 __global__ void gpu_matrix_transpose(int *d_X, int *d_Y, int dim);

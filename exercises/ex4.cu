@@ -5,7 +5,7 @@
 #include <cuda.h>
 #include <stdio.h>
 
-#define BLOCKS  1
+#define BLOCKS    1
 #define THREADS 512
 
 // Prototype

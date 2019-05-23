@@ -45,7 +45,7 @@ __host__ void printDevProp(cudaDeviceProp devProp)
 
     printf("  Clock rate:                    %d\n",  devProp.clockRate);
     printf("  Memory Bus Width (bits):       %d\n",  prop.memoryBusWidth);
-    printf("  Peak Memory Bandwidth (GB/s): %f\n\n", 2.0 * prop.memoryClockRate * (prop.memoryBusWidth / 8) / 1.0e6);
+    printf("  Peak Memory Bandwidth (GB/s):  %f\n\n", 2.0 * prop.memoryClockRate * (prop.memoryBusWidth / 8) / 1.0e6);
     printf("  Total constant memory:         %lu\n", devProp.totalConstMem);
     printf("  Texture alignment:             %lu\n", devProp.textureAlignment);
     printf("  Concurrent copy and execution: %s\n", (devProp.deviceOverlap ? "Yes" : "No"));

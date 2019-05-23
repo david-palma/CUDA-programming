@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 #define BLOCKS  16
-#define THREADS 1
+#define THREADS  1
 
 // Prototypes
 __global__ void gpu_square_matrix_mult(int *d_A, int *d_B, int *d_P, int dim);

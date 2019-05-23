@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 #define BLOCKS  512
-#define THREADS 1
+#define THREADS   1
 
 // Prototype
 __global__ add(int *a, int *b, int *c);

@@ -59,7 +59,7 @@ int main(void)
 __global__ add(int *a, int *b, int *c)
 {
     int index = blockIdx.x * blockDim.x + threadIdx.x;
-    c[index] = a[index] + b[index];
+    c[index]  = a[index] + b[index];
 }
 
 // Initialisation

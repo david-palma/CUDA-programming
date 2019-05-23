@@ -60,7 +60,7 @@ __global__ saxpy(float a, float *x, float *y, int N)
     // Avoid accessing beyond the end of the arrays
     if (index < N)
     {
-        y[index] = a*x[index] + y[index];
+        y[index] = a * x[index] + y[index];
     }
 }
 
