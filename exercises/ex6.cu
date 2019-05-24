@@ -59,7 +59,7 @@ int main(void)
     return(EXIT_SUCCESS);
 }
 
-// Single-precision A*X Plus Y
+// Single-precision A*X Plus Y (on device)
 __global__ void saxpy(float a, float *x, float *y, float *z, int N)
 {
     int index = blockIdx.x * blockDim.x + threadIdx.x;

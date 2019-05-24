@@ -61,7 +61,7 @@ int main(void)
     return(EXIT_SUCCESS);
 }
 
-// Vector addition
+// Vector addition (on device)
 __global__ void add(int *a, int *b, int *c)
 {
     c[blockIdx.x] = a[blockIdx.x] + b[blockIdx.x];

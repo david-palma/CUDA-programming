@@ -5,116 +5,105 @@
 #include <cuda.h>
 #include <stdio.h>
 
-#define BLOCKS  2
-#define THREADS 2
+#define BLOCKS  512
+#define THREADS 256
 
-// Prototypes
-__global__ void gpu_square_matrix_mult(int *d_A, int *d_B, int *d_P, int N);
-__host__ void ints(int *m, int N);
-__host__ void eye(int *M, int N);
-__host__ void print_matrix(int *A, int N);
+// Prototype
+__global__ void saxpy(float a, float *x, float *y, float *z, int N);
+__host__ void ints(float *m, int N);
+__host__ void print_performance(float time_ms, int N);
 
 int main(void)
 {
-    int *d_A, *d_B, *d_P;    // host copies of A, B, P
-    int *A, *B, *P;          // host copies of A, B, P
+    float *x, *y, *z, a;     // host copies of x, y, a
+    float *d_x, *d_y, *d_z;  // device copies of x, y
 
-    int    N = BLOCKS * THREADS;
-    int size = N * N * sizeof(int);
+    int    N = 1 << 20;
+    int size = N * sizeof(float);
 
-    // Allocate space for host copies of A, B, P
-    A = (int *)malloc(size);
-    B = (int *)malloc(size);
-    P = (int *)malloc(size);
+    // Allocate space for host copies of x, y
+    x = (float *)malloc(size);
+    y = (float *)malloc(size);
+    z = (float *)malloc(size);
 
     // Setup input values
-    ints(A, N * N);
-    eye(B, N);
-    ints(P, N * N);
+    ints(x, N);
+    ints(y, N);
+    a = 3.0/2.5;
 
-    // Allocate space for device copies of A, B, P
-    cudaMalloc((void **)&d_A, size);
-    cudaMalloc((void **)&d_B, size);
-    cudaMalloc((void **)&d_P, size);
+    // Allocate space for device copies of x, y
+    cudaMalloc((void **)&d_x, size);
+    cudaMalloc((void **)&d_y, size);
+    cudaMalloc((void **)&d_z, size);
+
+    // Create CUDA events for performance evaluation purposes
+    cudaEvent_t start, stop;
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
 
     // Copy inputs to device
-    cudaMemcpy(d_A, A, size, cudaMemcpyHostToDevice);
-    cudaMemcpy(d_B, B, size, cudaMemcpyHostToDevice);
-    cudaMemcpy(d_P, P, size, cudaMemcpyHostToDevice);
-
-    // Setup the execution configuration
-    dim3 dim_grid(BLOCKS, BLOCKS, 1);     // size: BLOCKS x BLOCKS x 1
-    dim3 dim_block(THREADS, THREADS, 1);  // size: THREADS x THREADS x 1
+    cudaMemcpy(d_x, x, size, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_y, y, size, cudaMemcpyHostToDevice);
 
     // Call the kernel on GPU
-    gpu_square_matrix_mult<<< dim_grid, dim_block >>>(d_A, d_B, d_P, N);
+    cudaEventRecord(start);
+    saxpy<<< BLOCKS, THREADS >>>(a, d_x, d_y, d_z, N);
+    cudaEventRecord(stop);
 
     // Copy result back to host
-    cudaMemcpy(P, d_P, size, cudaMemcpyDeviceToHost);
+    cudaMemcpy(z, d_z, size, cudaMemcpyDeviceToHost);
 
-    // Check the result
-    print_matrix(A, N);
-    print_matrix(B, N);
-    print_matrix(P, N);
+    // Compute the elapsed time in milliseconds
+    cudaEventSynchronize(stop);
+    float milliseconds = 0;
+    cudaEventElapsedTime(&milliseconds, start, stop);
+
+    print_performance(milliseconds, N);
 
     // Cleanup
-    free(A);
-    free(B);
-    free(P);
-    cudaFree(d_A);
-    cudaFree(d_B);
-    cudaFree(d_P);
+    free(x);
+    free(y);
+    free(z);
+    cudaFree(d_x);
+    cudaFree(d_y);
+    cudaFree(d_z);
 
     return(EXIT_SUCCESS);
 }
 
-// Square matrix multiplication
-__global__ void gpu_square_matrix_mult(int *d_A, int *d_B, int *d_P, int N)
+// Single-precision A*X Plus Y (on device)
+__global__ void saxpy(float a, float *x, float *y, float *z, int N)
 {
-    // Pvalue is the element of the matrix that is computed by the thread
-    int Pvalue = 0;
+    int index = blockIdx.x * blockDim.x + threadIdx.x;
 
-    int row = blockIdx.y * blockDim.y + threadIdx.y;
-    int col = blockIdx.x * blockDim.x + threadIdx.x;
-
-    // Avoid accessing beyond the end of the matrices
-    if(row < N && col < N)
+    // Avoid accessing beyond the end of the arrays
+    if(index < N)
     {
-        for(int k = 0; k < N; k++)
-        {
-            Pvalue += d_A[row * N + k] * d_B[k * N + col];
-        }
-
-        d_P[row * N + col] = Pvalue;
+        z[index] = a * x[index] + y[index];
     }
 }
 
 // Initialisation
-__host__ void ints(int *m, int N)
+__host__ void ints(float *m, int N)
 {
     int i;
     for(i = 0; i < N; i++)
-        m[i] = i;
+        m[i] = i/(i + 1.0);
 }
 
-// Identity matrix
-__host__ void eye(int *M, int N)
+__host__ void print_performance(float time_ms, int N)
 {
-    for(int i = 0; i < N; i++)
-        for(int j = 0; j < N; j++)
-            M[i*N + j] = (i == j);
-}
+    // Compute the effective bandwidth: BW = (Rb + Wb)/(t*1e9)
+    float RbWb, BW;
+    RbWb = N*5.0;  // number of bytes transferred per array read or write
+    RbWb *= 3.0;   // 3 is the reading of x, y and writing of z
+    BW   = RbWb/(time_ms*1e6);  // bandwidth in GB/s
 
-// Print the elements of the matrix
-__host__ void print_matrix(int *A, int N)
-{
-    for(int i = 0; i < N; i++)
-    {
-        for(int j = 0; j < N; j++)
-        {
-            printf("%d\t", A[i * N + j]);
-        }
-        printf("\n");
-    }
-    printf("\n");
+    // Measuring computational throughput: GFLOP = 2*N/(t*1e9)
+    float GFLOP = 2.0*N/(time_ms*1e6);  // throughput in GB/s
+
+    printf("Device performance\n"
+           "Elapsed time (s): %.3f\n"
+           "Effective Bandwidth (GB/s): %.3f\n"
+           "Effective computational throughput (GFLOP/s): %.3f\n", time_ms, BW, GFLOP);
 }

@@ -61,7 +61,7 @@ int main(void)
     return(EXIT_SUCCESS);
 }
 
-// Vector addition
+// Vector addition (on device)
 __global__ void add(int *a, int *b, int *c)
 {
     c[threadIdx.x] = a[threadIdx.x] + b[threadIdx.x];

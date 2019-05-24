@@ -44,7 +44,7 @@ int main(void)
     return(EXIT_SUCCESS);
 }
 
-// Addition
+// Addition (on device)
 __global__ void add(int *a, int *b, int *c)
 {
     *c = *a + *b;
