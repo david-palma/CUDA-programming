@@ -10,16 +10,16 @@ Code run on the host can manage memory on both the host and device, and also lau
 Here you can find the solutions for different simple exercises about GPU programming in CUDA C/C++.
 The source code is well commented and easy to follow, though a minimum knowledge of parallel architectures is recommended.
 
-* [exercise 0](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex00.cu): hello, world!
-* [exercise 1](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex01.cu): print devices properties
-* [exercise 2](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex02.cu): addition
-* [exercise 3](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex03.cu): vector addition using parallel blocks
-* [exercise 4](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex04.cu): vector addition using parallel threads
-* [exercise 5](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex05.cu): vector addition combining blocks and threads
-* [exercise 6](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex06.cu): single-precision A*X Plus Y
-* [exercise 7](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex07.cu): time, bandwidth, and throughput computation (single-precision A*X Plus Y)
-* [exercise 8](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex08.cu): multiplication of square matrices
-* [exercise 9](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex09.cu): transpose of a square matrix
+* [exercise 00](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex00.cu): hello, world!
+* [exercise 01](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex01.cu): print devices properties
+* [exercise 02](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex02.cu): addition
+* [exercise 03](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex03.cu): vector addition using parallel blocks
+* [exercise 04](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex04.cu): vector addition using parallel threads
+* [exercise 05](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex05.cu): vector addition combining blocks and threads
+* [exercise 06](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex06.cu): single-precision A*X Plus Y
+* [exercise 07](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex07.cu): time, bandwidth, and throughput computation (single-precision A*X Plus Y)
+* [exercise 08](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex08.cu): multiplication of square matrices
+* [exercise 09](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex09.cu): transpose of a square matrix
 * [exercise 10](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex10.cu): dot product (with shared memory)
 ## Compiling and running the code
 
