@@ -1,5 +1,5 @@
 // CUDA programming
-// Exercise n. 8
+// Exercise n. 08
 
 #include <errno.h>
 #include <cuda.h>
