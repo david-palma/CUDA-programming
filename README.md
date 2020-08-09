@@ -10,17 +10,17 @@ Code run on the host can manage memory on both the host and device, and also lau
 Here you can find the solutions for different simple exercises about GPU programming in CUDA C/C++.
 The source code is well commented and easy to follow, though a minimum knowledge of parallel architectures is recommended.
 
-* [exercise 00](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex00.cu): hello, world!
-* [exercise 01](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex01.cu): print devices properties
-* [exercise 02](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex02.cu): addition
-* [exercise 03](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex03.cu): vector addition using parallel blocks
-* [exercise 04](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex04.cu): vector addition using parallel threads
-* [exercise 05](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex05.cu): vector addition combining blocks and threads
-* [exercise 06](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex06.cu): single-precision A*X Plus Y
-* [exercise 07](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex07.cu): time, bandwidth, and throughput computation (single-precision A*X Plus Y)
-* [exercise 08](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex08.cu): multiplication of square matrices
-* [exercise 09](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex09.cu): transpose of a square matrix
-* [exercise 10](https://github.com/david-palma/CUDA_programming/tree/master/exercises/ex10.cu): dot product (with shared memory)
+* [exercise 00](./exercises/ex00.cu): hello, world!
+* [exercise 01](./exercises/ex01.cu): print devices properties
+* [exercise 02](./exercises/ex02.cu): addition
+* [exercise 03](./exercises/ex03.cu): vector addition using parallel blocks
+* [exercise 04](./exercises/ex04.cu): vector addition using parallel threads
+* [exercise 05](./exercises/ex05.cu): vector addition combining blocks and threads
+* [exercise 06](./exercises/ex06.cu): single-precision A*X Plus Y
+* [exercise 07](./exercises/ex07.cu): time, bandwidth, and throughput computation (single-precision A*X Plus Y)
+* [exercise 08](./exercises/ex08.cu): multiplication of square matrices
+* [exercise 09](./exercises/ex09.cu): transpose of a square matrix
+* [exercise 10](./exercises/ex10.cu): dot product (with shared memory)
 ## Compiling and running the code
 
 The CUDA C/C++ compiler `nvcc` is part of the NVIDIA CUDA Toolkit which is used to separate source code into host and device components. Then, you can compile the code with `nvcc`.
