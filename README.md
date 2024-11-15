@@ -22,7 +22,7 @@ The source code is well commented and easy to follow, though a minimum knowledge
 - [exercise 08](./exercises/ex08.cu): multiplication of square matrices
 - [exercise 09](./exercises/ex09.cu): transpose of a square matrix
 - [exercise 10](./exercises/ex10.cu): dot product using shared memory
-- [exercise 10](./exercises/ex11.cu): prefix sum (exclusive scan) using shared memory
+- [exercise 11](./exercises/ex11.cu): prefix sum (exclusive scan) using shared memory
 
 ## Compiling and running the code
 
