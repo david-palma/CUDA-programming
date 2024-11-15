@@ -10,7 +10,7 @@
 
 // Prototype
 __global__ void add(int *a, int *b, int *c);
-__host__ void ints(int *m, int N);
+__host__ void initialize_array(int *m, int N);
 __host__ void print_array(int *a, int N);
 
 int main(void)
@@ -27,8 +27,8 @@ int main(void)
     c = (int *)malloc(size);
 
     // Setup input values
-    ints(a, N);
-    ints(b, N);
+    initialize_array(a, N);
+    initialize_array(b, N);
 
     // Allocate space for device copies of a, b, c
     cudaMalloc((void **)&d_a, size);
@@ -67,15 +67,14 @@ __global__ void add(int *a, int *b, int *c)
     c[threadIdx.x] = a[threadIdx.x] + b[threadIdx.x];
 }
 
-// Initialisation
-__host__ void ints(int *m, int N)
+// Host function to initialize an array
+__host__ void initialize_array(int *m, int N)
 {
-    int i;
-    for(i = 0; i < N; i++)
+    for(int i = 0; i < N; i++)
         m[i] = i;
 }
 
-// Print the elements of the array
+// Host function to print an array
 __host__ void print_array(int *a, int N)
 {
     for(int i = 0; i < N; i++)

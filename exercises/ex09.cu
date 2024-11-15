@@ -10,7 +10,7 @@
 
 // Prototypes
 __global__ void square_matrix_transpose(int *d_X, int *d_Y, int N);
-__host__ void ints(int *m, int N);
+__host__ void initialize_array(int *array, int N)
 __host__ void print_matrix(int *A, int N);
 
 int main(void)
@@ -26,7 +26,7 @@ int main(void)
     B = (int *)malloc(size);
 
     // Setup input values
-    ints(A, N * N);
+    initialize_array(A, N * N);
 
     // Allocate space for device copies of A, B
     cudaMalloc((void **)&d_A, size);
@@ -77,15 +77,16 @@ __global__ void square_matrix_transpose(int *d_X, int *d_Y, int N)
     }
 }
 
-// Initialisation
-__host__ void ints(int *m, int N)
+// Host function to initialize an array
+__host__ void initialize_array(int *array, int N)
 {
-    int i;
-    for(i = 0; i < N; i++)
-        m[i] = i;
+    for (int i = 0; i < N; i++)
+    {
+        array[i] = i + 1;  // Sequential integers
+    }
 }
 
-// Print the elements of the matrix
+// Host function to print a matrix
 __host__ void print_matrix(int *A, int N)
 {
     for(int i = 0; i < N; i++)

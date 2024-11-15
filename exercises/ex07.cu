@@ -10,7 +10,7 @@
 
 // Prototype
 __global__ void saxpy(float a, float *x, float *y, float *z, int N);
-__host__ void ints(float *m, int N);
+__host__ void initialize_array(float *m, int N);
 __host__ void print_performance(float time_ms, int N);
 
 int main(void)
@@ -27,8 +27,8 @@ int main(void)
     z = (float *)malloc(size);
 
     // Setup input values
-    ints(x, N);
-    ints(y, N);
+    initialize_array(x, N);
+    initialize_array(y, N);
     a = 3.0/2.5;
 
     // Allocate space for device copies of x, y
@@ -83,11 +83,10 @@ __global__ void saxpy(float a, float *x, float *y, float *z, int N)
     }
 }
 
-// Initialisation
-__host__ void ints(float *m, int N)
+// Host function to initialize an array
+__host__ void initialize_array(float *m, int N)
 {
-    int i;
-    for(i = 0; i < N; i++)
+    for(int i = 0; i < N; i++)
         m[i] = i/(i + 1.0);
 }
 

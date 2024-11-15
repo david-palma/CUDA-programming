@@ -10,7 +10,7 @@
 
 // Prototypes
 __global__ void square_matrix_mult(int *d_A, int *d_B, int *d_P, int N);
-__host__ void ints(int *m, int N);
+__host__ void initialize_array(int *array, int N)
 __host__ void eye(int *M, int N);
 __host__ void print_matrix(int *A, int N);
 
@@ -28,9 +28,9 @@ int main(void)
     P = (int *)malloc(size);
 
     // Setup input values
-    ints(A, N * N);
+    initialize_array(A, N * N);
     eye(B, N);
-    ints(P, N * N);
+    initialize_array(P, N * N);
 
     // Allocate space for device copies of A, B, P
     cudaMalloc((void **)&d_A, size);
@@ -89,15 +89,16 @@ __global__ void square_matrix_mult(int *d_A, int *d_B, int *d_P, int N)
     }
 }
 
-// Initialisation
-__host__ void ints(int *m, int N)
+// Host function to initialize an array
+__host__ void initialize_array(int *array, int N)
 {
-    int i;
-    for(i = 0; i < N; i++)
-        m[i] = i;
+    for (int i = 0; i < N; i++)
+    {
+        array[i] = i + 1;  // Sequential integers
+    }
 }
 
-// Identity matrix
+// Host function to build an identity matrix
 __host__ void eye(int *M, int N)
 {
     for(int i = 0; i < N; i++)
@@ -105,7 +106,7 @@ __host__ void eye(int *M, int N)
             M[i*N + j] = (i == j);
 }
 
-// Print the elements of the matrix
+// Host function to print a matrix
 __host__ void print_matrix(int *A, int N)
 {
     for(int i = 0; i < N; i++)

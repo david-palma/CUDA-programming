@@ -10,8 +10,8 @@
 
 // Prototype
 __global__ void dot_prod(int *a, int *b, int *c);
-__host__ void ints(int *m, int N);
-__host__ void print_array(int *a, int N);
+__host__ void initialize_array(int *array, int N)
+__host__ void print_array(int *array, int N)
 
 int main(void)
 {
@@ -25,8 +25,8 @@ int main(void)
     c = (int *)malloc(sizeof(int));
 
     // Setup input values
-    ints(a, N_ELEMS);
-    ints(b, N_ELEMS);
+    initialize_array(a, N_ELEMS);
+    initialize_array(b, N_ELEMS);
 
     // Allocate space for device copies of a, b, c
     cudaMalloc((void **)&d_a, size);
@@ -80,20 +80,21 @@ __global__ void dot_prod(int *a, int *b, int *c)
     }
 }
 
-// Initialisation
-__host__ void ints(int *m, int N)
+// Host function to initialize an array
+__host__ void initialize_array(int *array, int N)
 {
-    int i;
-    for(i = 0; i < N; i++)
-        m[i] = 1;
+    for (int i = 0; i < N; i++)
+    {
+        array[i] = 1;
+    }
 }
 
-// Print the elements of the array
-__host__ void print_array(int *a, int N)
+// Host function to print an array
+__host__ void print_array(int *array, int N)
 {
-    for(int i = 0; i < N; i++)
+    for (int i = 0; i < N; i++)
     {
-        printf("%d\t", a[i]);
+        printf("%d\t", array[i]);
     }
     printf("\n");
 }
